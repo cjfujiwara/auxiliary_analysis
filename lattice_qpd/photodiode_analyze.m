@@ -156,7 +156,6 @@ for nn=1:length(qpd_filenames)
 
     % Basic sin func to fit
     myfunc = @(A,B,C,T,t) A*sin(2*pi*t/T + B) + C;    
-
     myfit = fittype(@(A,B,C,T,t) myfunc(A,B,C,T,t),'independent',{'t'},...
         'coefficients',{'A','B','C','T'});
 
