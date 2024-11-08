@@ -1,4 +1,4 @@
-function [hF,output] = qpd_main(npt,opts)
+function [figs,output] = qpd_main(npt,opts)
 % qpd_main.m
 %
 % This function is the main analysis for the QPD data that is produced by
@@ -20,9 +20,11 @@ function [hF,output] = qpd_main(npt,opts)
 
 
 calib = qpd_calibrations;
+
+figs={};
 %% Default Settings
-if nargin == 1
-    opt = struct;
+if nargin <2
+    opts = struct;
 end
 
 if ~isfield(opts,'doLatticeLoad')
@@ -33,34 +35,67 @@ if ~isfield(opts,'doXDTModulation')
     opts.doXDTModulation = true;
 end
 
-if isfield
+if ispc
     src='X:\LabJackLogs\ODTQPD';
 else
     src= '/Volumes/main/LabJackLogs/ODTQPD';
 end
 
+if nargin<1
+   npt=[]; 
+end
+
+
 %% Load qpd_data
 
-
+if isempty(npt)
+    [qpd_data,ret] = getDataRecent(src);
+    if ~ret
+       return; 
+    end
+else
+    disp(['gathering ' num2str(length(npt)) ' qpd files']);
+    for kk=1:length(npt)
+        [data,ret]=getData(npt(kk),src);
+        if ret            
+            if ~exist('qpd_data','var')
+                qpd_data(1) = data;
+            else
+                qpd_data(end+1)=data;
+            end
+        end
+    end
+end
 
 
 %% XDT Modulation
 if opts.doXDTModulation
-    qpd_odt = qpd_od_modulation(qpd_data);
-    hF(end+1) = qpd_show_odt_modulation(qpd_odt,calib);
+    [qpd_odt,ret] = qpd_odt_modulation(qpd_data);
+    if ret
+        figs{end+1} = qpd_show_odt_modulation(qpd_odt,calib); 
+    else
+        figs{end+1}={};
+    end
 end
 
+%% Lattice Load
+if opts.doLatticeLoad
+    [qpd_lattice,ret] = qpd_lattice_load(qpd_data);
+    if ret
+        figs{end+1} = qpd_show_lattice_load(qpd_lattice,calib);
+    else
+        figs{end+1}={};
+    end
+end
 
 end
-function data = getDataRecent(src)
+function [data,ret] = getDataRecent(src)
+    ret=true;
     d = now;
     YYYY=datestr(d,'YYYY');
     mm = datestr(d,'mm');
     dd = datestr(d,'dd');
-
-
     pd_dir = fullfile(src,YYYY,[YYYY '.' mm],[mm '.' dd]);
-
     flist=dir([pd_dir filesep 'ODTQPD_*.mat']);
     filename=flist(end).name;
     fullfilename = fullfile(pd_dir,filename);
@@ -69,10 +104,12 @@ function data = getDataRecent(src)
     else
         warning('unable to find file');
         disp(fullfilename);
+        ret=false;
     end
 end
 
-function data=getData(d,src)
+function [data,ret]=getData(d,src)
+    ret=true;
     YYYY=datestr(d,'YYYY');
     mm = datestr(d,'mm');
     dd = datestr(d,'dd');
@@ -88,6 +125,7 @@ function data=getData(d,src)
     else
         warning('unable to find file');
         disp(fullfilename);
+        ret=false;
     end
 end
 

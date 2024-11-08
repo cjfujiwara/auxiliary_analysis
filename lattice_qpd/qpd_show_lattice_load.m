@@ -51,7 +51,7 @@ end
 if ~isfield(opt,'Parent')
     opt.Parent = figure;
     set(opt.Parent,'Name','qpd_lattice_load','color','w',...
-        'Position',[100 100 1200 300])
+        'Position',[100 100 1200 350])
     clf(opt.Parent)
 
 else

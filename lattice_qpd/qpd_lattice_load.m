@@ -1,4 +1,4 @@
-function lattice_load_analysis = qpd_lattice_load(qpd_data,opts)
+function [lattice_load_analysis,ret] = qpd_lattice_load(qpd_data,opts)
 
 if nargin==1
     opts=struct;    
@@ -16,54 +16,59 @@ ylatt_ind       = 8;
 zlatt_ind       = 9;
 
 lattice_load_analysis = struct;
+ret=true;
+
+try
+    for kk=1:length(qpd_data)
+       qpd=qpd_data(kk);   
+       t = qpd.t;
+       t = t*1e3;
+
+       if isequal(opts.StartTime,'auto')
+            ind = 10;
+            iStart=max(find(diff(qpd.data(:,ind))==1));    
+            opts.StartTime = t(iStart);
+       end
+
+        i1 = find(t>opts.StartTime,1);
+
+        tpre = t(1:i1);
+        x = movmean(qpd.data(1:i1,xlatt_ind),10);
+        y = movmean(qpd.data(1:i1,ylatt_ind),10);
+        z = movmean(qpd.data(1:i1,zlatt_ind),10);
+
+        xdt1 = mean(qpd.data(1:i1,xdt1_ind));
+        xdt1Err=std(qpd.data(1:i1,xdt1_ind));
+        xdt2 = mean(qpd.data(1:i1,xdt2_ind));
+        xdt2Err=std(qpd.data(1:i1,xdt2_ind));
+
+        FitX=minJerkLoadFit(tpre,x);    cIx = confint(FitX,0.66);
+        FitY=minJerkLoadFit(tpre,y);    cIy = confint(FitY,0.66);
+        FitZ=minJerkLoadFit(tpre,z);    cIz = confint(FitZ,0.66);
+
+        lattice_load_analysis(kk).t = tpre;
+        lattice_load_analysis(kk).X = x;
+        lattice_load_analysis(kk).Y = y;
+        lattice_load_analysis(kk).Z = z;
 
 
-for kk=1:length(qpd_data)
-   qpd=qpd_data(kk);   
-   t = qpd.t;
-   t = t*1e3;
-
-   if isequal(opts.StartTime,'auto')
-        ind = 10;
-        iStart=max(find(diff(qpd.data(:,ind))==1));    
-        opts.StartTime = t(iStart);
-   end
-
-    i1 = find(t>opts.StartTime,1);
-
-    tpre = t(1:i1);
-    x = movmean(qpd.data(1:i1,xlatt_ind),10);
-    y = movmean(qpd.data(1:i1,ylatt_ind),10);
-    z = movmean(qpd.data(1:i1,zlatt_ind),10);
-
-    xdt1 = mean(qpd.data(1:i1,xdt1_ind));
-    xdt1Err=std(qpd.data(1:i1,xdt1_ind));
-    xdt2 = mean(qpd.data(1:i1,xdt2_ind));
-    xdt2Err=std(qpd.data(1:i1,xdt2_ind));
-
-    FitX=minJerkLoadFit(tpre,x);    cIx = confint(FitX,0.66);
-    FitY=minJerkLoadFit(tpre,y);    cIy = confint(FitY,0.66);
-    FitZ=minJerkLoadFit(tpre,z);    cIz = confint(FitZ,0.66);
-
-    lattice_load_analysis(kk).t = tpre;
-    lattice_load_analysis(kk).X = x;
-    lattice_load_analysis(kk).Y = y;
-    lattice_load_analysis(kk).Z = z;
-
-
-    lattice_load_analysis(kk).XDT1 = xdt1;
-    lattice_load_analysis(kk).XDT1Err = xdt1Err;
-    lattice_load_analysis(kk).XDT2 = xdt2;
-    lattice_load_analysis(kk).XDT2Err = xdt2Err;
-    lattice_load_analysis(kk).FitX = FitX;
-    lattice_load_analysis(kk).dX = FitX.dy;
-    lattice_load_analysis(kk).dXErr = 0.5*(cIx(2,1)-cIx(1,1));
-    lattice_load_analysis(kk).FitY = FitY;
-    lattice_load_analysis(kk).dY = FitY.dy;
-    lattice_load_analysis(kk).dYErr = 0.5*(cIy(2,1)-cIy(1,1));
-    lattice_load_analysis(kk).FitZ = FitZ;
-    lattice_load_analysis(kk).dZ = FitZ.dz;
-    lattice_load_analysis(kk).dZErr = 0.5*(cIz(2,1)-cIz(1,1));
+        lattice_load_analysis(kk).XDT1 = xdt1;
+        lattice_load_analysis(kk).XDT1Err = xdt1Err;
+        lattice_load_analysis(kk).XDT2 = xdt2;
+        lattice_load_analysis(kk).XDT2Err = xdt2Err;
+        lattice_load_analysis(kk).FitX = FitX;
+        lattice_load_analysis(kk).dX = FitX.dy;
+        lattice_load_analysis(kk).dXErr = 0.5*(cIx(2,1)-cIx(1,1));
+        lattice_load_analysis(kk).FitY = FitY;
+        lattice_load_analysis(kk).dY = FitY.dy;
+        lattice_load_analysis(kk).dYErr = 0.5*(cIy(2,1)-cIy(1,1));
+        lattice_load_analysis(kk).FitZ = FitZ;
+        lattice_load_analysis(kk).dZ = FitZ.dy;
+        lattice_load_analysis(kk).dZErr = 0.5*(cIz(2,1)-cIz(1,1));
+    end
+catch ME
+   warning(getReport(ME,'extended','hyperlinks','on')); 
+   ret = false;
 end
 
 end

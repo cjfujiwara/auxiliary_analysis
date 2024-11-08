@@ -45,7 +45,7 @@ end
 if ~isfield(opt,'Parent')
     opt.Parent = figure;
     set(opt.Parent,'Name','qpd_lattice_load','color','w',...
-        'Position',[100 100 1200 300])
+        'Position',[100 100 1200 350])
     clf(opt.Parent)
 
 else
@@ -152,6 +152,8 @@ s1_bar = mean([qpd_odt.Sum1]);
 s1_err = std([qpd_odt.Sum1]);
 s1_bar_W = mean([qpd_odt.Sum1])*calib.XDT1_WperV;
 s1_err_W = std([qpd_odt.Sum1])*calib.XDT1_WperV;
+freq1_bar = 1e3*mean([qpd_odt.Freq1]);
+freq1_err = 1e3*mean([qpd_odt.Freq1Err]);
 
 amp2_bar = 1e3*mean([qpd_odt.Amp2]);
 amp2_err = 1e3*std([qpd_odt.Amp2]);
@@ -163,6 +165,8 @@ s2_bar = mean([qpd_odt.Sum2]);
 s2_err = std([qpd_odt.Sum2]);
 s2_bar_W = mean([qpd_odt.Sum2])*calib.XDT2_WperV;
 s2_err_W = std([qpd_odt.Sum2])*calib.XDT2_WperV;
+freq2_bar = 1e3*mean([qpd_odt.Freq2]);
+freq2_err = 1e3*mean([qpd_odt.Freq2Err]);
 
 opt.Parent.UserData.Axes{3}=uitable('parent',opt.Parent,'units','pixels','Position',...
     qpd_getAxisPos(1,3,3,opt.Parent,margins));
@@ -171,9 +175,11 @@ tbl={
     ['xdt2 [mV/V/um]'], [num2str(calib.mVoverV_per_um_2,'%.4f')],[calib.mVoverV_per_um_2_CalibrationStr];  
     ['xdt1 [W/V]'], [num2str(calib.XDT1_WperV,'%.2f')],[calib.XDT1_CalibrationStr];
     ['xdt2 [W/V]'],[num2str(calib.XDT2_WperV,'%.2f')],[calib.XDT1_CalibrationStr];
+    ['xdt1 freq [Hz]'], [num2str(freq1_bar,'%.2f') ' ' char(177) ' ' num2str(freq1_err,'%.2f')], [' '];
     ['xdt1 ' char(966) ' [cycle]'], [num2str(phi1_bar,'%.2f') ' ' char(177) ' ' num2str(phi1_err,'%.2f')], [' '];
     ['xdt1 amp [mV/V,um]'], [num2str(amp1_bar,'%.2f') ' ' char(177) ' ' num2str(amp1_err,'%.2f')],  [num2str(amp1_bar_um,'%.2f') ' ' char(177) ' ' num2str(amp1_err_um,'%.2f')];
     ['xdt1 pow [V,W]'], [num2str(s1_bar,'%.2f') ' ' char(177) ' ' num2str(s1_err,'%.2f')],  [num2str(s1_bar_W,'%.2f') ' ' char(177) ' ' num2str(s1_err_W,'%.2f')];
+    ['xdt2 freq [Hz]'], [num2str(freq2_bar,'%.2f') ' ' char(177) ' ' num2str(freq2_err,'%.2f')], [' '];
     ['xdt2 ' char(966) ' [cycle]'], [num2str(phi2_bar,'%.2f') ' ' char(177) ' ' num2str(phi2_err,'%.2f')], [' '];
     ['xdt2 amp [mV/V,um]'], [num2str(amp2_bar,'%.2f') ' ' char(177) ' ' num2str(amp2_err,'%.2f')],  [num2str(amp2_bar_um,'%.2f') ' ' char(177) ' ' num2str(amp2_err_um,'%.2f')];
     ['xdt2 pow [V,W]'], [num2str(s2_bar,'%.2f') ' ' char(177) ' ' num2str(s2_err,'%.2f')],  [num2str(s2_bar_W,'%.2f') ' ' char(177) ' ' num2str(s2_err_W,'%.2f')];
