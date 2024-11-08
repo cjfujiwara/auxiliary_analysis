@@ -1,4 +1,4 @@
-function XDT_Modulation=qpd_odt_modulation(qpd_data,opts)
+function odt_modulation_analysis=qpd_odt_modulation(qpd_data,opts)
 
 if nargin==1
     opts=struct;    
@@ -20,7 +20,7 @@ if ~isfield(opts,'StartTime')
    opts.StartTime = 'auto'; 
 end
 
-XDT_Modulation = struct;
+odt_modulation_analysis = struct;
 
 x1_ind = 1;
 y1_ind = 2;
@@ -63,26 +63,26 @@ for kk=1:length(qpd_data)
     fit2 = sinefit(t(:),x2(:),1e-3*opts.Frequency,opts.RampTime);
     cI2=confint(fit1,0.667);
     
-    XDT_Modulation(kk).t = t;
-    XDT_Modulation(kk).X1         = x1;
-    XDT_Modulation(kk).Fit1       = fit1;  
-    XDT_Modulation(kk).Sum1       = s1;
-    XDT_Modulation(kk).Sum1Err    = s1err;
-    XDT_Modulation(kk).Amp1       = fit1.amp;
-    XDT_Modulation(kk).Amp1Err    = 0.5*(cI1(2,1)-cI1(1,1));
-    XDT_Modulation(kk).Phi1       = fit1.phase;
-    XDT_Modulation(kk).Phi1Err     = 0.5*(cI1(2,2)-cI1(1,2));
-    XDT_Modulation(kk).DriftFunc1  = @(t) fit1.offset + fit1.v*t +fit1.a*t.^2;
+    odt_modulation_analysis(kk).t = t;
+    odt_modulation_analysis(kk).X1         = x1;
+    odt_modulation_analysis(kk).Fit1       = fit1;  
+    odt_modulation_analysis(kk).Sum1       = s1;
+    odt_modulation_analysis(kk).Sum1Err    = s1err;
+    odt_modulation_analysis(kk).Amp1       = fit1.amp;
+    odt_modulation_analysis(kk).Amp1Err    = 0.5*(cI1(2,1)-cI1(1,1));
+    odt_modulation_analysis(kk).Phi1       = fit1.phase;
+    odt_modulation_analysis(kk).Phi1Err     = 0.5*(cI1(2,2)-cI1(1,2));
+    odt_modulation_analysis(kk).DriftFunc1  = @(t) fit1.offset + fit1.v*t +fit1.a*t.^2;
 
-    XDT_Modulation(kk).X2         = x2;
-    XDT_Modulation(kk).Fit2       = fit2;  
-    XDT_Modulation(kk).Sum2       = s2;
-    XDT_Modulation(kk).Sum2Err    = s2err;
-    XDT_Modulation(kk).Amp2       = fit2.amp;
-    XDT_Modulation(kk).Amp2Err    = 0.5*(cI2(2,1)-cI2(1,1));
-    XDT_Modulation(kk).Phi2       = fit2.phase;
-    XDT_Modulation(kk).Phi2Err     = 0.5*(cI2(2,2)-cI2(1,2));  
-    XDT_Modulation(kk).DriftFunc2  = @(t) fit2.offset + fit2.v*t +fit2.a*t.^2;
+    odt_modulation_analysis(kk).X2         = x2;
+    odt_modulation_analysis(kk).Fit2       = fit2;  
+    odt_modulation_analysis(kk).Sum2       = s2;
+    odt_modulation_analysis(kk).Sum2Err    = s2err;
+    odt_modulation_analysis(kk).Amp2       = fit2.amp;
+    odt_modulation_analysis(kk).Amp2Err    = 0.5*(cI2(2,1)-cI2(1,1));
+    odt_modulation_analysis(kk).Phi2       = fit2.phase;
+    odt_modulation_analysis(kk).Phi2Err     = 0.5*(cI2(2,2)-cI2(1,2));  
+    odt_modulation_analysis(kk).DriftFunc2  = @(t) fit2.offset + fit2.v*t +fit2.a*t.^2;
 end
 
 end

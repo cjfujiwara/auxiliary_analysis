@@ -7,21 +7,37 @@ if ~isfield(opts,'X_ErpermV')
     opts.X_ErpermV = 0.22;
 end
 
+if ~isfield(opts,'X_CalibrationStr')
+    opts.X_CalibrationStr = '2024/10/??';
+end
+
 if ~isfield(opts,'Y_ErpermV')
     opts.Y_ErpermV = 0.128;
 end
+
+if ~isfield(opts,'Y_CalibrationStr')
+    opts.Y_CalibrationStr = '2024/10/??';
+end
+
 if ~isfield(opts,'Z_ErpermV')
     opts.Z_ErpermV = 0.20;
+end
+if ~isfield(opts,'Z_CalibrationStr')
+    opts.Z_CalibrationStr = '2024/10/??';
 end
 
 if ~isfield(opts,'XDT1_WperV')
     opts.XDT1_WperV = 1;
 end
-
+if ~isfield(opts,'XDT1_CalibrationStr')
+    opts.XDT1_CalibrationStr = '2024/10/??';
+end
 if ~isfield(opts,'XDT2_WperV')
     opts.XDT2_WperV = 1;
 end
-
+if ~isfield(opts,'XDT2_CalibrationStr')
+    opts.XDT2_CalibrationStr = '2024/10/??';
+end
 if ~isfield(opts,'FigLabel')
     opts.FigLabel='';
 end
@@ -112,14 +128,14 @@ xdt2err = std([qpd_lattice.XDT2]);
 hF.UserData.Axes{4}=uitable('parent',hF,'units','pixels','Position',...
     qpd_getAxisPos(1,4,4,hF,margins));
 tbl={
-    ['X Er/mV'], [num2str(opts.X_ErpermV,'%.2f')],[' '];
-['Y Er/mV'], [num2str(opts.Y_ErpermV,'%.2f')],[' '];
-['Z Er/mV'], [num2str(opts.Z_ErpermV,'%.2f')],[' '];
+    ['X Er/mV'], [num2str(opts.X_ErpermV,'%.2f')],[opts.X_CalibrationStr];
+['Y Er/mV'], [num2str(opts.Y_ErpermV,'%.2f')],[opts.Y_CalibrationStr];
+['Z Er/mV'], [num2str(opts.Z_ErpermV,'%.2f')],[opts.Z_CalibrationStr];
 [char(916) 'X (mV,Er)'], [num2str(1e3*dx0,'%.2f') ' ' char(177) ' ' num2str(dx0err*1e3,'%.2f')],[num2str(1e3*dx0*opts.X_ErpermV,'%.2f') ' ' char(177) ' ' num2str(dx0err*1e3*opts.X_ErpermV,'%.2f')];
 [char(916) 'Y (mV,Er)'], [num2str(1e3*dy0,'%.2f') ' ' char(177) ' ' num2str(dy0err*1e3,'%.2f')], [num2str(1e3*dy0*opts.Y_ErpermV,'%.2f') ' ' char(177) ' ' num2str(dy0err*1e3*opts.Y_ErpermV,'%.2f')];
 [char(916) 'Z (mV,Er)'], [num2str(1e3*dz0,'%.2f') ' ' char(177) ' ' num2str(dz0err*1e3,'%.2f')],[num2str(1e3*dz0*opts.Z_ErpermV,'%.2f') ' ' char(177) ' ' num2str(dz0err*1e3*opts.Z_ErpermV,'%.2f')]
-['XDT1 W/V'], [num2str(opts.XDT1_WperV,'%.2f')],[''];
-['XDT2 W/V'],[num2str(opts.XDT2_WperV,'%.2f')],[''];
+['XDT1 W/V'], [num2str(opts.XDT1_WperV,'%.2f')],[opts.XDT1_CalibrationStr];
+['XDT2 W/V'],[num2str(opts.XDT2_WperV,'%.2f')],[opts.XDT1_CalibrationStr];
 ['XDT1 (V,W)'], [num2str(xdt1,'%.2f') ' ' char(177) ' ' num2str(xdt1err,'%.2f')], [num2str(xdt1*opts.XDT1_WperV,'%.2f') ' ' char(177) ' ' num2str(xdt1err*opts.XDT1_WperV,'%.2f')];
 ['XDT2 (V,W)'], [num2str(xdt2,'%.2f') ' ' char(177) ' ' num2str(xdt2err,'%.2f')], [num2str(xdt2*opts.XDT2_WperV,'%.2f') ' ' char(177) ' ' num2str(xdt2err*opts.XDT2_WperV,'%.2f')];
 };

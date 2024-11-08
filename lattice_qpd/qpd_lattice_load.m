@@ -1,4 +1,4 @@
-function qpd_lattice = qpd_lattice_load(qpd_data,opts)
+function lattice_load_analysis = qpd_lattice_load(qpd_data,opts)
 
 if nargin==1
     opts=struct;    
@@ -15,7 +15,7 @@ xlatt_ind       = 7;
 ylatt_ind       = 8;
 zlatt_ind       = 9;
 
-qpd_lattice = struct;
+lattice_load_analysis = struct;
 
 
 for kk=1:length(qpd_data)
@@ -45,25 +45,25 @@ for kk=1:length(qpd_data)
     FitY=minJerkLoadFit(tpre,y);    cIy = confint(FitY,0.66);
     FitZ=minJerkLoadFit(tpre,z);    cIz = confint(FitZ,0.66);
 
-    qpd_lattice(kk).t = tpre;
-    qpd_lattice(kk).X = x;
-    qpd_lattice(kk).Y = y;
-    qpd_lattice(kk).Z = z;
+    lattice_load_analysis(kk).t = tpre;
+    lattice_load_analysis(kk).X = x;
+    lattice_load_analysis(kk).Y = y;
+    lattice_load_analysis(kk).Z = z;
 
 
-    qpd_lattice(kk).XDT1 = xdt1;
-    qpd_lattice(kk).XDT1Err = xdt1Err;
-    qpd_lattice(kk).XDT2 = xdt2;
-    qpd_lattice(kk).XDT2Err = xdt2Err;
-    qpd_lattice(kk).FitX = FitX;
-    qpd_lattice(kk).dX = FitX.dy;
-    qpd_lattice(kk).dXErr = 0.5*(cIx(2,1)-cIx(1,1));
-    qpd_lattice(kk).FitY = FitY;
-    qpd_lattice(kk).dY = FitY.dy;
-    qpd_lattice(kk).dYErr = 0.5*(cIy(2,1)-cIy(1,1));
-    qpd_lattice(kk).FitZ = FitZ;
-    qpd_lattice(kk).dZ = FitZ.dz;
-    qpd_lattice(kk).dZErr = 0.5*(cIz(2,1)-cIz(1,1));
+    lattice_load_analysis(kk).XDT1 = xdt1;
+    lattice_load_analysis(kk).XDT1Err = xdt1Err;
+    lattice_load_analysis(kk).XDT2 = xdt2;
+    lattice_load_analysis(kk).XDT2Err = xdt2Err;
+    lattice_load_analysis(kk).FitX = FitX;
+    lattice_load_analysis(kk).dX = FitX.dy;
+    lattice_load_analysis(kk).dXErr = 0.5*(cIx(2,1)-cIx(1,1));
+    lattice_load_analysis(kk).FitY = FitY;
+    lattice_load_analysis(kk).dY = FitY.dy;
+    lattice_load_analysis(kk).dYErr = 0.5*(cIy(2,1)-cIy(1,1));
+    lattice_load_analysis(kk).FitZ = FitZ;
+    lattice_load_analysis(kk).dZ = FitZ.dz;
+    lattice_load_analysis(kk).dZErr = 0.5*(cIz(2,1)-cIz(1,1));
 end
 
 end
