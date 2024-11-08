@@ -45,7 +45,7 @@ if nargin<1
    npt=[]; 
 end
 
-
+output= struct;
 %% Load qpd_data
 
 if isempty(npt)
@@ -70,20 +70,26 @@ end
 
 %% XDT Modulation
 if opts.doXDTModulation
+    disp('qpd modulation analysis');
     [qpd_odt,ret] = qpd_odt_modulation(qpd_data);
     if ret
-        figs{end+1} = qpd_show_odt_modulation(qpd_odt,calib); 
+        figs{end+1} = qpd_show_odt_modulation(qpd_odt,calib,opts); 
+        output.QPD_Modulation = qpd_odt;
     else
+        output.QPD_Modulation = [];
         figs{end+1}={};
     end
 end
 
 %% Lattice Load
 if opts.doLatticeLoad
+    disp('qpd lattice load');
     [qpd_lattice,ret] = qpd_lattice_load(qpd_data);
     if ret
-        figs{end+1} = qpd_show_lattice_load(qpd_lattice,calib);
+        output.QPD_LatticeLoad = qpd_lattice;
+        figs{end+1} = qpd_show_lattice_load(qpd_lattice,calib,opts);
     else
+        output.QPD_LatticeLoad = [];
         figs{end+1}={};
     end
 end

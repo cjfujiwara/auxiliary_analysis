@@ -60,9 +60,9 @@ end
 
 
 if ~isempty(opt.FigLabel)
-    uicontrol('style','text','parent',opt.Parent,'string',FigLabel,...
+    uicontrol('style','text','parent',opt.Parent,'string',opt.FigLabel,...
         'fontsize',7,'horizontalalignment','left',...
-        'backgroundcolor','w');
+        'backgroundcolor','w','Position',[0 0 600 15]);
 end
 
 co=parula(length(qpd_lattice));
