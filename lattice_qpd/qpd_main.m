@@ -1,9 +1,7 @@
-function qpd = qpd_main(varargin)
+function qpd = qpd_main(opts)
 
-src=C:\Users\coraf\Desktop\Data\
-if nargin ==1
-    uigetdir
-end
+qpd_od_modulation(qpd_data)
+
 
 end
 

@@ -20,22 +20,17 @@ if ~isfield(opts,'StartTime')
    opts.StartTime = 'auto'; 
 end
 
-% Conversion from V/V to position athe atoms
-% NOTE THAT THIS CALBIRATION WAS NOT DONE PROPLERY AND ASSUMES AN IN PHASE
-% DRIVE WITH APPRIORPIATE MOTION.
-
-opts.X1_name = 'X1';
-opts.Y1_name = 'Y1';
-opts.S1_name = 'SUM1';
-    
-opts.X2_name = 'X2';
-opts.Y2_name = 'Y2';
-opts.S2_name = 'SUM2';   
 XDT_Modulation = struct;
 
+x1_ind = 1;
+y1_ind = 2;
+s1_ind = 3;
+x2_ind = 4;
+y2_ind = 5;
+s2_ind = 6;
+
 for kk=1:length(qpd_data)
-   qpd=qpd_data(kk);
-   
+   qpd=qpd_data(kk);   
    t = qpd.t;
    t = t*1e3;
    
@@ -52,16 +47,16 @@ for kk=1:length(qpd_data)
    inds=iStart:iEnd;      
    t = t(inds); 
    
-   x1 = qpd.data(inds,1)./qpd.data(inds,3);
-   y1 = qpd.data(inds,2)./qpd.data(inds,3);
+   x1 = qpd.data(inds,x1_ind)./qpd.data(inds,s1_ind);
+   y1 = qpd.data(inds,y1_ind)./qpd.data(inds,s1_ind);
    
-   s1 = mean(qpd.data(inds,3));
-   s1err = std(qpd.data(inds,3));
+   s1 = mean(qpd.data(inds,s1_ind));
+   s1err = std(qpd.data(inds,s1_ind));
 
-    x2 = qpd.data(inds,4)./qpd.data(inds,6);
-    y2 = qpd.data(inds,5)./qpd.data(inds,6);
-    s2 = mean(qpd.data(inds,6));
-    s2err = std(qpd.data(inds,6));
+    x2 = qpd.data(inds,x2_ind)./qpd.data(inds,s2_ind);
+    y2 = qpd.data(inds,y2_ind)./qpd.data(inds,s2_ind);
+    s2 = mean(qpd.data(inds,s2_ind));
+    s2err = std(qpd.data(inds,s2_ind));
    
     fit1 = sinefit(t(:),x1(:),1e-3*opts.Frequency,opts.RampTime);
     cI1=confint(fit1,0.667);     
@@ -88,7 +83,6 @@ for kk=1:length(qpd_data)
     XDT_Modulation(kk).Phi2       = fit2.phase;
     XDT_Modulation(kk).Phi2Err     = 0.5*(cI2(2,2)-cI2(1,2));  
     XDT_Modulation(kk).DriftFunc2  = @(t) fit2.offset + fit2.v*t +fit2.a*t.^2;
-
 end
 
 end
