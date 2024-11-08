@@ -16,6 +16,9 @@ function [hF,output] = qpd_main(npt,opts)
 %
 % opts - options
 
+% Source Directory for files
+
+
 calib = qpd_calibrations;
 %% Default Settings
 if nargin == 1
@@ -30,8 +33,15 @@ if ~isfield(opts,'doXDTModulation')
     opts.doXDTModulation = true;
 end
 
+if isfield
+    src='X:\LabJackLogs\ODTQPD';
+else
+    src= '/Volumes/main/LabJackLogs/ODTQPD';
+end
+
 %% Load qpd_data
-src = 'X:\Data\LabJackLogs\ODTQPD';
+
+
 
 
 %% XDT Modulation
@@ -41,5 +51,43 @@ if opts.doXDTModulation
 end
 
 
+end
+function data = getDataRecent(src)
+    d = now;
+    YYYY=datestr(d,'YYYY');
+    mm = datestr(d,'mm');
+    dd = datestr(d,'dd');
+
+
+    pd_dir = fullfile(src,YYYY,[YYYY '.' mm],[mm '.' dd]);
+
+    flist=dir([pd_dir filesep 'ODTQPD_*.mat']);
+    filename=flist(end).name;
+    fullfilename = fullfile(pd_dir,filename);
+    if exist(fullfilename,'file')
+        data=load(fullfilename); 
+    else
+        warning('unable to find file');
+        disp(fullfilename);
+    end
+end
+
+function data=getData(d,src)
+    YYYY=datestr(d,'YYYY');
+    mm = datestr(d,'mm');
+    dd = datestr(d,'dd');
+
+    fdate = datestr(d,'YYYY-mm-dd_HH-MM-SS');
+    pd_dir = fullfile(src,YYYY,[YYYY '.' mm],[mm '.' dd]);
+    filename = ['ODTQPD_' fdate '.mat'];
+
+    fullfilename = fullfile(pd_dir,filename);
+
+    if exist(fullfilename,'file')
+        data=load(fullfilename); 
+    else
+        warning('unable to find file');
+        disp(fullfilename);
+    end
 end
 
