@@ -20,10 +20,10 @@ if ~isfield(calib,'Y_CalibrationStr')
 end
 
 if ~isfield(calib,'Z_ErpermV')
-    calib.Z_ErpermV = 0.20;
+    calib.Z_ErpermV = 0.24;
 end
 if ~isfield(calib,'Z_CalibrationStr')
-    calib.Z_CalibrationStr = '2024/10/??';
+    calib.Z_CalibrationStr = '2024/11/19';
 end
 
 if ~isfield(calib,'XDT1_WperV')
