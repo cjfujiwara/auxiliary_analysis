@@ -27,8 +27,8 @@ calib.Y_ErpermV = 0.128;
 calib.Y_CalibrationStr = '2024/10/??';
 
 %% ZLattice
-calib.Z_ErpermV = 0.20;
-calib.Z_CalibrationStr = '2024/10/??';
+calib.Z_ErpermV = 0.24;
+calib.Z_CalibrationStr = '2024/11/19';
 
 end
 
