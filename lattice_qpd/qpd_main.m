@@ -46,6 +46,10 @@ if ~isfield(opts,'doXDTModulation')
     opts.doXDTModulation = true;
 end
 
+if ~isfield(opts,'doLatticeFluor')
+   opts.doLatticeFluor =true;
+end
+
 if ispc
     src='X:\LabJackLogs\ODTQPD';
 else
@@ -55,6 +59,8 @@ end
 if nargin<1
    npt=[]; 
 end
+
+
 
 output= struct;
 %% Load qpd_data
@@ -101,6 +107,20 @@ if opts.doLatticeLoad
         figs{end+1} = qpd_show_lattice_load(qpd_lattice,calib,opts);
     else
         output.QPD_LatticeLoad = [];
+        figs{end+1}={};
+    end
+end
+
+%% Lattice Fluor
+if opts.doLatticeFluor
+    disp('qpd lattice fluor');
+    [qpd_lattice_fluor_out,ret] = qpd_lattice_fluor(qpd_data);
+    
+    if ret
+        output.QPD_LatticeFluor = qpd_lattice_fluor_out;
+        figs{end+1} = qpd_show_lattice_fluor(qpd_lattice_fluor_out,calib,opts);
+    else
+        output.QPD_LatticeFluor = [];
         figs{end+1}={};
     end
 end
