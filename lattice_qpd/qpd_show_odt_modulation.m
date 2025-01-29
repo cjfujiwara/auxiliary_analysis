@@ -90,6 +90,7 @@ for kk=1:length(qpd_odt)
     y2 = y2(:);
     plot(t,1e3*movmean(qpd_odt(kk).X1-y2,10),'.','color',co(kk,:));
     hold on;  
+    
 end
 
 for kk = 1:length(qpd_odt)
@@ -110,7 +111,7 @@ str = ['*conversion from mV/V to  '  newline ...
     'total trap motion and atom motion is non-trivial!*'];
 text(.01,.01,str,'units','normalized','HorizontalAlignment','left',...
     'verticalalignment','bottom','fontsize',7);
-%% XDT 1 Mod
+%% XDT 2 Mod
 
 opt.Parent.UserData.Axes{2}=axes('parent',opt.Parent,'units','pixels','Position',...
     qpd_getAxisPos(1,3,2,opt.Parent,margins));
@@ -120,6 +121,7 @@ for kk=1:length(qpd_odt)
     y2 = y2(:);
     plot(t,1e3*movmean(qpd_odt(kk).X2-y2,10),'.','color',co(kk,:));
     hold on;  
+
 end
 
 for kk = 1:length(qpd_odt)

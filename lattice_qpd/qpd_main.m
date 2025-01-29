@@ -88,7 +88,7 @@ end
 %% XDT Modulation
 if opts.doXDTModulation
     disp('qpd modulation analysis');
-    [qpd_odt,ret] = qpd_odt_modulation(qpd_data);
+    [qpd_odt,ret] = qpd_odt_modulation(qpd_data,opts);
     if ret
         figs{end+1} = qpd_show_odt_modulation(qpd_odt,calib,opts); 
         output.QPD_Modulation = qpd_odt;
@@ -151,6 +151,10 @@ function [data,ret]=getData(d,src)
     mm = datestr(d,'mm');
     dd = datestr(d,'dd');
 
+    
+    ddp1 = datestr(d+1,'dd');
+    ddn1 = datestr(d-1,'dd');
+
     fdate = datestr(d,'YYYY-mm-dd_HH-MM-SS');
     pd_dir = fullfile(src,YYYY,[YYYY '.' mm],[mm '.' dd]);
     filename = ['ODTQPD_' fdate '.mat'];
@@ -160,6 +164,19 @@ function [data,ret]=getData(d,src)
     if exist(fullfilename,'file')
         data=load(fullfilename); 
     else
+        pd_dir_p = fullfile(src,YYYY,[YYYY '.' mm],[mm '.' ddp1]);
+        fullfilename_p = fullfile(pd_dir_p,filename);
+        
+        pd_dir_n = fullfile(src,YYYY,[YYYY '.' mm],[mm '.' ddn1]);
+        fullfilename_n = fullfile(pd_dir_n,filename);
+        
+        if exist(fullfilename_p,'file')
+            data = load(fullfilename_p);
+            return;
+        elseif exist(fullfilename_n,'file')
+            data = load(fullfilename_n);
+            return;
+        end               
         warning('unable to find file');
         disp(fullfilename);
         ret=false;
