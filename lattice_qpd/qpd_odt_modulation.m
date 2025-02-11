@@ -40,17 +40,18 @@ try
        total_time = opts.RampTime+opts.ModulationTime;
 
        if isequal(opts.StartTime,'auto')
-           % Find when the QPD trigger goes high
+           % Find when the QPD trigger goes high at end of modulation ramp
             ind = 10;
             iStart=max(find(diff(qpd.data(:,ind))==1));    
             opts.StartTime = t(iStart)-opts.RampTime;
+
        end   
 
        iStart = find(t>opts.StartTime,1);      
        t=t-opts.StartTime;   
        iEnd = find(t>total_time,1)-1;   
        inds=iStart:iEnd;      
-       t = t(inds); 
+       t = t(inds);
 
        x1 = qpd.data(inds,x1_ind)./qpd.data(inds,s1_ind);
        y1 = qpd.data(inds,y1_ind)./qpd.data(inds,s1_ind);
@@ -70,6 +71,7 @@ try
             fit1 = sinefit(t(:),x1(:),opts.RampTime);
             fit2 = sinefit(t(:),x2(:),opts.RampTime);
         end
+        
 
 %         fit1 = sinefit(t(:),x1(:),opts.RampTime);
 %         fit2 = sinefit(t(:),x2(:),opts.RampTime);
@@ -79,6 +81,7 @@ try
 
         odt_modulation_analysis(kk).t = t;
         odt_modulation_analysis(kk).X1         = x1;
+        odt_modulation_analysis(kk).Y1         = y1;
         odt_modulation_analysis(kk).Fit1       = fit1;  
         odt_modulation_analysis(kk).Sum1       = s1;
         odt_modulation_analysis(kk).Sum1Err    = s1err;
@@ -91,6 +94,7 @@ try
         odt_modulation_analysis(kk).DriftFunc1  = @(t) fit1.offset + fit1.v*t +fit1.a*t.^2;
 
         odt_modulation_analysis(kk).X2         = x2;
+        odt_modulation_analysis(kk).Y2         = y2;
         odt_modulation_analysis(kk).Fit2       = fit2;  
         odt_modulation_analysis(kk).Sum2       = s2;
         odt_modulation_analysis(kk).Sum2Err    = s2err;
@@ -183,17 +187,25 @@ function fout = sinefitFreq(t,y,f,RampTime)
     cS0=cS/sqrt(cS^2+cC^2);
     cC0=cC/sqrt(cS^2+cC^2);
 
-    phase_guess=atan2(cC0,cS0);
+%     phase_guess=atan2(cC0,cS0);
     
-    if round(mod(phase_guess,2*pi)/pi) == 1
-        amp_guess = (max(y)-min(y))*.5;
-        phase_guess=mod(phase_guess+pi,2*pi);
-    else
-        amp_guess = -(max(y)-min(y))*.5;
-        phase_guess=phase_guess;
-    end
+    amp_guess = (max(y)-min(y))*.5;
+    phase_guess = 0;
+    
+% %     phase_guess=mod(phase_guess+pi,2*pi);
+% %     
+%    
+%     if round(mod(phase_guess,2*pi)/pi) == 1
+% %         amp_guess = (max(y)-min(y))*.5;
+%         phase_guess=mod(phase_guess+pi,2*pi);
+%     else
+% %         amp_guess = -(max(y)-min(y))*.5;
+%         phase_guess=phase_guess;
+%     end
 
     opt.StartPoint = [amp_guess phase_guess mean(y) 0 0 ]; 
+    opt.Lower      = [-inf -pi -inf -inf];
+    opt.Upper      = [0 pi inf inf];
     
     fout = fit(t,y,myfit,opt);    
 end

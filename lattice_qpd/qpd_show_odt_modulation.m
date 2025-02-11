@@ -45,7 +45,7 @@ end
 if ~isfield(opt,'Parent')
     opt.Parent = figure;
     set(opt.Parent,'Name','qpd_XDT_modulation','color','w',...
-        'Position',[100 100 1200 350])
+        'Position',[100 100 1200 700])
     clf(opt.Parent)
 
 else
@@ -82,8 +82,9 @@ margins.xSpace=50;      % x space between objects
 
 %% XDT 1 Mod
 
+%Horizontal
 opt.Parent.UserData.Axes{1}=axes('parent',opt.Parent,'units','pixels','Position',...
-    qpd_getAxisPos(1,3,1,opt.Parent,margins));
+    qpd_getAxisPos(2,3,1,opt.Parent,margins));
 for kk=1:length(qpd_odt)   
     t=[qpd_odt(kk).t];t=t(:);
     y2 = [qpd_odt(kk).DriftFunc1(t)];
@@ -111,10 +112,33 @@ str = ['*conversion from mV/V to  '  newline ...
     'total trap motion and atom motion is non-trivial!*'];
 text(.01,.01,str,'units','normalized','HorizontalAlignment','left',...
     'verticalalignment','bottom','fontsize',7);
+
+% Vertical
+opt.Parent.UserData.Axes{2}=axes('parent',opt.Parent,'units','pixels','Position',...
+    qpd_getAxisPos(2,3,4,opt.Parent,margins));
+
+for kk=1:length(qpd_odt)   
+    t=[qpd_odt(kk).t];t=t(:);
+    plot(t,1e3*movmean(qpd_odt(kk).Y1,10),'.','color',co(kk,:));
+    hold on;  
+
+end
+
+
+xlabel('total modulation time (ms)');
+ylabel('qpd2 y-response (mV/V)');
+title('xdt 1')
+
+str = sprintf('Mean vertical position: %.1f ± %.1f mV/V',...
+    1e3*mean([qpd_odt.Y1],"all"),1e3*std2([qpd_odt.Y1]));
+
+text(.01,.01,str,'units','normalized','HorizontalAlignment','left',...
+    'verticalalignment','bottom','fontsize',10);
 %% XDT 2 Mod
 
+% Horizontal 
 opt.Parent.UserData.Axes{2}=axes('parent',opt.Parent,'units','pixels','Position',...
-    qpd_getAxisPos(1,3,2,opt.Parent,margins));
+    qpd_getAxisPos(2,3,2,opt.Parent,margins));
 for kk=1:length(qpd_odt)   
     t=[qpd_odt(kk).t];t=t(:);
     y2 = [qpd_odt(kk).DriftFunc2(t)];
@@ -141,6 +165,26 @@ str = ['*conversion from mV/V to  '  newline ...
     'total trap motion and atom motion is non-trivial!*'];
 text(.01,.01,str,'units','normalized','HorizontalAlignment','left',...
     'verticalalignment','bottom','fontsize',7);
+
+% Vertical
+opt.Parent.UserData.Axes{2}=axes('parent',opt.Parent,'units','pixels','Position',...
+    qpd_getAxisPos(2,3,5,opt.Parent,margins));
+for kk=1:length(qpd_odt)   
+    t=[qpd_odt(kk).t];t=t(:);
+    plot(t,1e3*movmean(qpd_odt(kk).Y2,10),'.','color',co(kk,:));
+    hold on;  
+
+end
+
+xlabel('total modulation time (ms)');
+ylabel('qpd2 y-response (mV/V)');
+title('xdt 2')
+
+str = sprintf('Mean vertical position: %.1f ± %.1f mV/V',...
+    1e3*mean([qpd_odt.Y2],"all"),1e3*std2([qpd_odt.Y2]));
+
+text(.01,.01,str,'units','normalized','HorizontalAlignment','left',...
+    'verticalalignment','bottom','fontsize',10);
 
 %% summary table
 
@@ -171,7 +215,7 @@ freq2_bar = 1e3*mean([qpd_odt.Freq2]);
 freq2_err = 1e3*mean([qpd_odt.Freq2Err]);
 
 opt.Parent.UserData.Axes{3}=uitable('parent',opt.Parent,'units','pixels','Position',...
-    qpd_getAxisPos(1,3,3,opt.Parent,margins));
+    qpd_getAxisPos(2,3,3,opt.Parent,margins));
 tbl={
     ['xdt1 [mV/V/um]'], [num2str(calib.mVoverV_per_um_1,'%.4f')],[calib.mVoverV_per_um_1_CalibrationStr];
     ['xdt2 [mV/V/um]'], [num2str(calib.mVoverV_per_um_2,'%.4f')],[calib.mVoverV_per_um_2_CalibrationStr];  
@@ -188,7 +232,6 @@ tbl={
 };
 set(opt.Parent.UserData.Axes{3},'RowName',{},'ColumnName',{},'ColumnWidth',{110 80 130},...
     'Data',tbl);
-
 
 %% Size Changed Fcn
 
